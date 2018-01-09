@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+var xTimer = null
+var yTimer = null
+var imageNumber = 0
+var xDirection = 1
+//var yDirection = 1
+
+
+
+function walk(){
+
+	alien = document.getElementById("x")
+    alienW = parseInt(alien.width)
+    alienH = parseInt(alien.height)
+    /*alienX1 = parseInt(alien.style.left)
+    alienX2 = parseInt(alien.style.left)+alienW
+    alienY1 = parseInt(alien.style.top)
+    alienY2 = parseInt(alien.style.top)+alienH*/
+
+    box = document.getElementById("box")
+    boxW = parseInt(box.width)
+    boxH = parseInt(box.height)
+    /*boxX1 = parseInt(box.style.left)
+    boxX2 = parseInt(box.style.left) + boxW
+    boxY1 = parseInt(box.style.top)
+    boxY2 = parseInt(box.style.top) + boxH*/
+
+    if (xDirection == 1){
+        alien.style.left = parseInt(alien.style.left) + 1 + "px"
+        
+        if (parseInt(alien.style.left)+alienW == parseInt(box.style.left) && yTimer == null){
+            if ( alienH > 2 * boxH ){
+                if (parseInt(box.style.left)+boxW < window.innerWidth){
+                    box.style.left = parseInt(box.style.left) + 2 + "px"
+                }
+            } else {
+                xDirection = - xDirection
+            }
+        }
+        
+        if (parseInt(alien.style.left) == parseInt(box.style.left)+boxW && parseInt(alien.style.top)+alienH == parseInt(box.style.top)){
+            yTimer = window.setInterval(jumpDown, 2)
+        }
+        
+        if (yTimer == null){
+            if(imageNumber < 30){
+                imageNumber++
+            }else{
+                imageNumber = 0
+            }
+        }
+        alien.src = "images/alien/alienrwalk" + imageNumber + ".gif"
+    } else if (xDirection == -1){
+        alien.style.left = parseInt(alien.style.left) - 1 + "px"
+        
+        if (parseInt(alien.style.left) == parseInt(box.style.left)+boxW && yTimer == null){
+            if ( alienH > 2 * boxH ){
+                if (parseInt(box.style.left) > 0){
+                    box.style.left = parseInt(box.style.left) - 2 + "px"
+                }
+            } else {
+                xDirection = - xDirection
+            }
+        }
+        
+        if (parseInt(alien.style.left)+alienW == parseInt(box.style.left) && parseInt(alien.style.top)+alienH == parseInt(box.style.top)){
+            yTimer = window.setInterval(jumpDown, 2)
+        }
+        
+        if (yTimer == null){
+            if(imageNumber < 30){
+                imageNumber++
+            }else{
+                imageNumber = 0
+            }
+        }
+        alien.src = "images/alien/alienlwalk" + imageNumber + ".gif"
+    }
+    
+    if (parseInt(alien.style.left)+alienW > parseInt(window.innerWidth)){
+        xDirection = -1
+    } else if (parseInt(alien.style.left) < 0) {
+        xDirection = 1
+    }
+	
+}
+    
+function jumpUp(){
+        
+    alien = document.getElementById("x")
+    alienW = parseInt(alien.width)
+    alienH = parseInt(alien.height)
+
+    box = document.getElementById("box")
+    boxW = parseInt(box.width)
+    boxH = parseInt(box.height)
+    
+    if ( parseInt(alien.style.left)+alienW < parseInt(box.style.left)
+       | parseInt(alien.style.left) > parseInt(box.style.left)+boxW
+       | parseInt(alien.style.top)+alienH < parseInt(box.style.top) ) {
+
+        alien.style.top = parseInt(alien.style.top) - 1 + "px"
+        if (parseInt(alien.style.top) < 0){
+            window.clearInterval(yTimer)
+            yTimer = window.setInterval(jumpDown, 2)
+        }  
+        
+    } else if( (parseInt(alien.style.left)+alienW == parseInt(box.style.left)
+                || parseInt(alien.style.left) == parseInt(box.style.left)+boxW)
+            && parseInt(alien.style.top)+alienH > parseInt(box.style.top) ) {
+        
+        xDirection = - xDirection
+        window.clearInterval(yTimer)
+        yTimer = window.setInterval(jumpDown, 2)
+        
+    } /*else if( parseInt(alien.style.left)+alienW > parseInt(box.style.left)
+            && parseInt(alien.style.left) < parseInt(box.style.left)+boxW
+            && parseInt(alien.style.top)+alienH == parseInt(box.style.top) ) {
+        
+        //yDirection = -1
+        //on top of the box
+        
+    }*/
+}
+    
+function jumpDown(){
+    
+    alien = document.getElementById("x")
+    alienW = parseInt(alien.width)
+    alienH = parseInt(alien.height)
+
+    box = document.getElementById("box")
+    boxW = parseInt(box.width)
+    boxH = parseInt(box.height)
+    
+    if ( parseInt(alien.style.left)+alienW < parseInt(box.style.left)
+       | parseInt(alien.style.left) > parseInt(box.style.left)+boxW
+       | parseInt(alien.style.top)+alienH < parseInt(box.style.top) ) {
+    
+        alien.style.top = parseInt(alien.style.top) + 1 + "px"
+        if (parseInt(alien.style.top) > 200) {
+            //yDirection = 1
+            window.clearInterval(yTimer)
+            yTimer = null
+        }
+        
+    } else if( parseInt(alien.style.left)+alienW > parseInt(box.style.left)
+            && parseInt(alien.style.left) < parseInt(box.style.left)+boxW) {
+        
+        
+        if ( parseInt(alien.style.top)+alienH <  parseInt(box.style.top) ) {
+            alien.style.top = parseInt(alien.style.top) + 1 + "px"
+        }else{
+            //yDirection = 1
+            box.style.width = (parseInt(box.style.width) / 2) +"px"
+            if (parseInt(box.style.width)< 50) {
+                alien.style.top = "200px"
+                gif = Document.getElementById("explosion")
+                box.style.display="none"
+                gif.style.display="display"
+                setTimeout(function(){ gif.style.display ="none" }, 500);
+            }else {
+                box.style.top = parseInt(box.style.top) + parseInt(box.style.width) + "px"
+                alien.style.top = parseInt(alien.style.top) + parseInt(box.style.width) + "px"
+            }
+            window.clearInterval(yTimer)
+            yTimer = null
+        }
+    }
+}
+
+function init(){
+	document.getElementById("x").onclick=function(){
+		if(xTimer == null){
+			xTimer = window.setInterval(walk, 10)
+		}else{
+			window.clearInterval(xTimer)
+			xTimer = null
+		}
+	}
+    
+    document.getElementById("y").onclick=function(){
+		if(yTimer == null){
+			yTimer = window.setInterval(jumpUp, 2)
+		}
+	}
+	
+}
+
+window.onload=init
+
+</script>
+</head>
+<body>
+<img src="images/alien/alienrwalk0.gif" id="x" style="position:absolute; top:200px; left:0px">
+<button id="y">Jump!</button>
+<img src="images/box.jpg" id="box" style="width:100px; position:absolute; top:200px; left:300px">
+<img src="images/explosion.gif" id="explosion" style="width:40px; position:absolute; top:260px; left:330px; display: none">
+</body>
+</html>
