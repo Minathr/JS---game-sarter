@@ -6,7 +6,6 @@ var xTimer = null
 var yTimer = null
 var imageNumber = 0
 var xDirection = 1
-var a=1
 //var yDirection = 1
 
 
@@ -33,9 +32,16 @@ function walk(){
         alien.style.left = parseInt(alien.style.left) + 1 + "px"
         
         if (parseInt(alien.style.left)+alienW == parseInt(box.style.left) && yTimer == null){
-            if ( alienH > 2 * boxH ){
+            if ( alienH >= 2 * boxH ){
                 if (parseInt(box.style.left)+boxW < window.innerWidth){
                     box.style.left = parseInt(box.style.left) + 2 + "px"
+                }
+                if (parseInt(box.style.left) + parseInt(box.style.width) >= window.innerWidth) {
+                    box.style.display = "none"
+                    gif = document.getElementById("explosion")
+                    gif.style.display= "inline"
+                    gif.style.left = box.style.left
+                    setTimeout(function(){ gif.style.display ="none" }, 1000)
                 }
             } else {
                 xDirection = - xDirection
@@ -58,9 +64,16 @@ function walk(){
         alien.style.left = parseInt(alien.style.left) - 1 + "px"
         
         if (parseInt(alien.style.left) == parseInt(box.style.left)+boxW && yTimer == null){
-            if ( alienH > 2 * boxH ){
+            if ( alienH >= 2 * boxH ){
                 if (parseInt(box.style.left) > 0){
                     box.style.left = parseInt(box.style.left) - 2 + "px"
+                }
+                if (parseInt(box.style.left) <= 0) {
+                    box.style.display = "none"
+                    gif = document.getElementById("explosion")
+                    gif.style.display= "inline"
+                    gif.style.left = box.style.left
+                    setTimeout(function(){ gif.style.display ="none" }, 1000)
                 }
             } else {
                 xDirection = - xDirection
@@ -157,12 +170,13 @@ function jumpDown(){
         }else{
             //yDirection = 1
             box.style.width = (parseInt(box.style.width) / 2) +"px"
-            if (parseInt(box.style.width)< 50) {
-                alien.style.top = "200px"
-                gif = Document.getElementById("explosion")
+            if (parseInt(box.style.width)< 25) {
                 box.style.display="none"
-                gif.style.display="display"
-                setTimeout(function(){ gif.style.display ="none" }, 500);
+                alien.style.top = "200px"
+                gif = document.getElementById("explosion")
+                gif.style.display= "inline"
+                gif.style.left = box.style.left
+                setTimeout(function(){ gif.style.display ="none" }, 1000)
             }else {
                 box.style.top = parseInt(box.style.top) + parseInt(box.style.width) + "px"
                 alien.style.top = parseInt(alien.style.top) + parseInt(box.style.width) + "px"
